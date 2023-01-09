@@ -1,0 +1,37 @@
+Common Attacks
+
+Compromised Database - where outside person gains access to the underlying Database
+    - Prevention methods: strongly encrypt user passwords with a strong salt and hash algorithm (bcrypt)
+    - Strongly encrypt password reset tokens (sha 256)
+
+Brute Force Attacks
+    - Person continues to try passwords
+    - To avoid this: bcrypt (makes login request slow), use rate limiting (express-rate-limit) or implement maximum login attempts
+Cross-site scripting Attacks
+    - Store JWT in HTTPOnly cookies (attacked cannot take the string)
+    - Sanitize user input data (with certain headers)
+Denial-of-Service Attacks (attacker sends bunch of requests that stops the service altogether)
+    - Implement rate limiting (express-rate-limiting)
+    - Limit body payload (body-parser)
+    - Avoid evil regular expressions (take an exponential amount of time to run)
+
+
+NOSQL Query Injection requests
+    - Query injection - hacker does not query for valid data but inject query expressions that translate to true
+        - Log in without making them to enter a password
+    -Use mongoose for MongoDB or sanitize user input data
+
+- Always use HTTPS in production applications
+- Create random password tokens with expiry Database
+- Deny access to JWT after password changes
+- Don't commit sensitive confid data to Git (like environment variables)
+- Don't send error details to clients
+(Other stuff not implemented here)
+- Prevent Cross-Site Request Forgery (csurf package)
+- Require re-authentication before a high-value action (payment)
+- Implement a blacklist of untrusted JWT (validated on each requests)
+- Confirm user email address after first creating account
+- Keep user logged in with refresh tokens (keep them logged in even after leaving)
+- Implement two-factor authentication
+
+-Prevent parameter pollution causing Uncaught Exceptions (when you use more parameters than your request actually takes in)
