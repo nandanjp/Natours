@@ -1,0 +1,56 @@
+Data Modelling = process of structuring data in real-world scenario using certain criteria
+    - Example: modelling an online shop such that it structures relationships between certain data
+
+1) Identify different relationships between data
+2) Referencing/normalizations vs embedding/denormalization
+3) Embedding or referencing other documents
+4) Types of referencing
+
+TYPES of Relationships (using movie site as an Example):
+    1:1 = movie -> name (1 movie only has 1 name)
+    1:Many (mongo has three, 1:few, 1:many, 1:ton)=
+        1:few = movie -> awards (1 movie can many a few awards)
+        1:many = movie -> reviews (1 movie can have many reviews (thousands))
+        1:ton = app -> log (1 app can have a ton of logs (millions)) 
+    Many:Many = movie -> actor, actor -> movie (relation in both direction: 1 movie has many actors, but 1 actors stars in many movies)
+
+    Referencing vs Embedding Data:
+        Referenced or normalized form = all data is separated (1 for movie, 1 for each actor)
+            The ids on each document used to referenced to other data (relate actor to movie)
+            Performance: easier to query each document
+                Requires more queries however
+        Embedded or denormalizated form = embedded (child) documents embedded in main document (parent)
+            Less queries since all movies have their actors in the same document
+            Impossible to query embedded document itself
+
+    When to embed and when to reference:
+        1) Determine type of Relationships
+        2) Data Access Patterns (how often is data read and written)
+        3) Data closeness (how close are the each data fields)
+
+        Better to embed if you read more than write = means easier to access information through only one request
+        If Datasets intrinsically belong to each other = embed information 
+
+Types of Referencing:
+    1) Child Referencing = parent (large document) stores array relating it to children
+        - Not really the best (better for 1:few)
+    2) Each child references parent
+        - Probably Better (best for 1:many and 1:ton)
+    -General role: array in mongoDB should not be allowed to grow indefinitely
+    3) Two-Way Relationships
+        - Many:Many references
+        - Movie stores actor id and actor stores movie id as well
+
+
+
+Designing the Model for this WEBSITE:
+
+Data Types: Tours, Locations, Reviews, Users, and Bookings
+
+users -> reviews = 1:Many (user has many reviews but 1 review only has one user), parent referencing
+tours -> reviews = 1:Many (tour has many reviews but 1 review only towards 1 tour), parent referencing
+tours -> locations = Few:Few (few locations for one tour, each location has few tours), embedding (since #locations are small and are instrinsic)
+tours -> users = few:few (1 tour few users, but 1 user can lead few tours), embedding or child-referencing
+users -> bookings and tours -> bookings:
+    Both are 1:Many and use parent referencing 
+    Data model meant to be intermediate between user who is a part of a specific tour
